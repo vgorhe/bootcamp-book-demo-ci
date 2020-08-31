@@ -3,8 +3,6 @@ package com.tw.bootcamp.bookshop.user;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -15,8 +13,6 @@ import javax.validation.constraints.NotBlank;
 @Entity
 @Table(name = "users")
 public class User {
-    public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,11 +21,13 @@ public class User {
     @NotBlank(message = "Password is mandatory")
     private String password;
 
-    public User(CreateUserCommand userCommand) {
-        email = userCommand.getEmail();
-        if (!userCommand.getPassword().isEmpty()) {
-            password = PASSWORD_ENCODER.encode(userCommand.getPassword());
-        }
+    private User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
+    public static User createFrom(CreateUserCommand userCommand) {
+        return new User(userCommand.getEmail(), userCommand.getPassword());
     }
 
     public UserView toView() {

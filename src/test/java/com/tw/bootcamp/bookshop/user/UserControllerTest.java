@@ -67,7 +67,7 @@ class UserControllerTest {
     @Test
     void shouldRespondWithErrorMessageWhenCreateUserValidationFails() throws Exception {
         CreateUserCommand userCredentials = new CreateUserCommandTestBuilder().withEmptyEmail().build();
-        Set<ConstraintViolation<User>> violations = validator.validate(new User(userCredentials));
+        Set<ConstraintViolation<User>> violations = validator.validate(User.createFrom(userCredentials));
         when(userService.create(userCredentials)).thenThrow(new ConstraintViolationException(violations));
 
         mockMvc.perform(post("/users")

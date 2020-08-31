@@ -26,7 +26,7 @@ public class UserService implements UserDetailsService {
         if (user.isPresent()) {
             throw new InvalidEmailException();
         }
-        User newUser = new User(userCommand);
+        User newUser = User.createFrom(userCommand);
         validator.validate(newUser);
         return userRepository.save(newUser);
     }

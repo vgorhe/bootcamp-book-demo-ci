@@ -8,13 +8,12 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.Set;
 
-import static com.tw.bootcamp.bookshop.user.User.PASSWORD_ENCODER;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserTest {
     @Test
     void shouldBeEmailMandatory() {
-        User user = new User(new CreateUserCommandTestBuilder().withEmptyEmail().build());
+        User user = User.createFrom(new CreateUserCommandTestBuilder().withEmptyEmail().build());
 
         Set<ConstraintViolation<User>> constraintViolations = constraintsValidator().validate(user);
 
@@ -25,19 +24,12 @@ class UserTest {
 
     @Test
     void shouldBePasswordMandatory() {
-        User user = new User(new CreateUserCommandTestBuilder().withEmptyPassword().build());
+        User user = User.createFrom(new CreateUserCommandTestBuilder().withEmptyPassword().build());
 
         Set<ConstraintViolation<User>> constraintViolations = constraintsValidator().validate(user);
 
         assertFalse(constraintViolations.isEmpty());
         assertEquals("Password is mandatory", constraintViolations.iterator().next().getMessage());
-    }
-
-    @Test
-    void shouldEncryptPassword() {
-        User user = new User(new CreateUserCommandTestBuilder().build());
-
-        assertTrue(PASSWORD_ENCODER.matches("foobar", user.getPassword()));
     }
 
     private Validator constraintsValidator() {
