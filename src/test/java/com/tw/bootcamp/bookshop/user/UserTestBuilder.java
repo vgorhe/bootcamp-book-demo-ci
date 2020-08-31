@@ -8,11 +8,12 @@ public class UserTestBuilder {
     public UserTestBuilder() {
         userBuilder = User.builder()
                 .id(1L)
-                .email("testemail@test.com");
+                .email("testemail@test.com")
+                .password("foobar");
     }
 
     public static CreateUserCommand buildCreateUserCommand() {
-        return new CreateUserCommand("testemail@test.com", "foobar");
+        return new CreateUserCommandTestBuilder().build();
     }
 
     public User build() {

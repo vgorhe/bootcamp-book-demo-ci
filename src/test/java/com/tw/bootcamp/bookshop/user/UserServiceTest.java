@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import javax.validation.ConstraintViolationException;
 import java.util.Optional;
 
-import static com.tw.bootcamp.bookshop.user.UserTestBuilder.buildCreateUserCommand;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -26,10 +25,10 @@ class UserServiceTest {
 
     @Test
     void shouldCreateUserWithValidInputs() throws InvalidEmailException {
-        CreateUserCommand userCommand = buildCreateUserCommand();
+        CreateUserCommand userCredentials = new CreateUserCommandTestBuilder().build();
 
-        User user = userService.create(userCommand);
-        Optional<User> fetchedUser = userRepository.findByEmail(userCommand.getEmail());
+        User user = userService.create(userCredentials);
+        Optional<User> fetchedUser = userRepository.findByEmail(userCredentials.getEmail());
 
         assertTrue(fetchedUser.isPresent());
         assertEquals(user.getId(), fetchedUser.get().getId());
@@ -37,7 +36,7 @@ class UserServiceTest {
 
     @Test
     void shouldNotCreateUserWhenUserWithSameEmailAlreadyExists() {
-        CreateUserCommand userCommand = buildCreateUserCommand();
+        CreateUserCommand userCommand = new CreateUserCommandTestBuilder().build();
         userRepository.save(new User(userCommand));
 
         InvalidEmailException createUserException = assertThrows(InvalidEmailException.class,
@@ -47,7 +46,7 @@ class UserServiceTest {
 
     @Test
     void shouldNotCreateUserWhenInputIsInvalid() {
-        CreateUserCommand invalidCommand = new CreateUserCommand("", "");
+        CreateUserCommand invalidCommand = new CreateUserCommandTestBuilder().withEmptyEmail().build();
 
         assertThrows(ConstraintViolationException.class, () -> userService.create(invalidCommand));
     }
