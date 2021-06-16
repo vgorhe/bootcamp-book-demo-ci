@@ -28,10 +28,10 @@ jobs:
       - checkout
       - attach_workspace:
           at: ./
-      - run: docker build -f Dockerfile --iidfile imageid.txt -t registry.heroku.com/book-shop-application-batch2/web:${CIRCLE_SHA1} .
+      - run: docker build -f Dockerfile --iidfile imageid.txt -t registry.heroku.com/book-shop-app-pair04/web:${CIRCLE_SHA1} .
       - run: docker login --username=_ --password=$HEROKU_TOKEN registry.heroku.com
-      - run: docker tag registry.heroku.com/book-shop-application-batch2/web:${CIRCLE_SHA1} registry.heroku.com/book-shop-application-batch2/web:${CIRCLE_SHA1}
-      - run: docker push registry.heroku.com/book-shop-application-batch2/web:${CIRCLE_SHA1}
+      - run: docker tag registry.heroku.com/book-shop-app-pair04/web:${CIRCLE_SHA1} registry.heroku.com/book-shop-app-pair04/web:${CIRCLE_SHA1}
+      - run: docker push registry.heroku.com/book-shop-app-pair04/web:${CIRCLE_SHA1}
       - persist_to_workspace:
           root: ./
           paths:
@@ -48,7 +48,7 @@ jobs:
       - run:
           name: "Patch the container hosted in heroku"
           command: |
-            curl -X PATCH https://api.heroku.com/apps/book-shop-application-batch2/formation --header "Content-Type: application/json" --header "Accept: application/vnd.heroku+json; version=3.docker-releases" --header "Authorization: Bearer ${HEROKU_TOKEN}" --data '{ "updates": [ { "type": "web", "docker_image": "'$(cat imageid.txt)'" } ] }'
+            curl -X PATCH https://api.heroku.com/apps/book-shop-app-pair04/formation --header "Content-Type: application/json" --header "Accept: application/vnd.heroku+json; version=3.docker-releases" --header "Authorization: Bearer ${HEROKU_TOKEN}" --data '{ "updates": [ { "type": "web", "docker_image": "'$(cat imageid.txt)'" } ] }'
 workflows:
   version: 2
   build_and_test:
