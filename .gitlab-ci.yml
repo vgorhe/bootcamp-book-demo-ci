@@ -1,0 +1,22 @@
+stages:
+  - build
+  - test
+image: gradle:6.6.1-jdk8
+gradle-build:
+  stage: build
+  script: gradle bootjar
+  artifacts:
+    paths:
+      - build
+      - .gradle
+    expire_in: 7 days
+test:
+  stage: test
+  script: gradle test
+  artifacts:
+    when: always
+    paths:
+      - build
+    reports:
+      junit: build/test-results/test/**/TEST-*.xml
+    expire_in: 7 days
